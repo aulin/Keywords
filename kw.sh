@@ -1,16 +1,34 @@
 #!/bin/bash
 
-# Listar de av mina anteckningsfiler som innehåller
-# angivet nyckelord i nyckelordsraden eller titeln.
+# List those notes that contain the given keyword
+# among their keywords or in their title.
 
-for p in "$@";
+directory="/home/johan/notes/"
+extension="*.txt"
+files="${directory}${extension}"
+
+fancy=0
+
+for q in "$@"
 do
-	# Med fin rubrik och i färg:
-
-    #echo "";
-    #echo "### $p ###";
-    #grep -lr --color=auto ^Keywords:.*"$p".*$ /home/johan/notes/*.txt;
-
-	# Utan krimskrams:
-	grep -lr -e ^Keywords:.*"$p".*$ -e ^Title:.*"$p".*$ /home/johan/notes/*.txt;
-done;
+	if [ $q = "-f" ]
+	then
+		if [ $fancy -eq 0 ]
+		then
+			# Use fancy headings and colors
+			fancy=1
+		else
+			# No bells and whistles
+			fancy=0
+		fi
+	else
+		if [ $fancy -eq 1 ]
+		then
+		    echo "";
+			echo "### $q ###";
+			grep -lr --color=auto -e ^Keywords:.*"$q".*$ -e ^Title:.*"$q".*$ $files;
+		else
+			grep -lr -e ^Keywords:.*"$q".*$ -e ^Title:.*"$q".*$ $files;
+		fi
+	fi
+done
